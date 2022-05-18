@@ -6,17 +6,19 @@ public class Control implements Frame.ActionListener, Frame.EventListener{
 	private Board board;
 	public Control() {
 		buffer = new Buffer();
-		board = new Board(5);
+		board = new Board(24);
 		frame = new Frame(this, this);
+		
+		
 	} 
 	@Override
 	public void onPaintEvent(Graphics g) {
-		buffer.drawToScreen(g, board.getBoard());
+		buffer.drawToScreen(g, board.getBoard(), board.getPosX(), board.getPosY(), 30);
 	}
 	@Override
 	public void onKeyEvent(Direction d) {
-		// TODO Auto-generated method stub
-		
+		board.updatePos(d);
+		frame.updateFrame();
 	}
 	@Override
 	public void onEnterEvent() {
