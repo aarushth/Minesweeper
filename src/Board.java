@@ -1,4 +1,3 @@
-import java.nio.file.FileAlreadyExistsException;
 import java.util.Random;
 
 
@@ -8,6 +7,7 @@ public class Board {
 	private int currentPosY;
 	private int size;
 	private boolean isGameOver;
+	private int flags;
 	
 	public Board(int size) {
 		board = new Tile[size][size];
@@ -15,8 +15,9 @@ public class Board {
 		initializeBoard();
 	}
 	public void initializeBoard() {
-		currentPosX = 0;
-		currentPosY = 0;
+		flags = 100;
+		currentPosX = (size-1)/2;
+		currentPosY = (size-1)/2;
 		isGameOver = false;
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
@@ -39,23 +40,18 @@ public class Board {
 			for(int j = 0; j < size; j++) {
 				if(board[i][j] == null) {
 					int fin = 0;
-					for(int l = -1; l < 2; l++) {
-						for(int m = -1;m < 2; m++) {
-							boolean breaker = false;
-							if(i+l < 0 || i+l >=size) {
-								breaker = true;
-							}
-							if(j+m < 0 || j+m >=size) {
-								breaker = true;
-							}
-							if(!breaker) {
-								if(board[i+l][j+m] != null && board[i+l][j+m].getNum() == 10) {
-									fin++;
-								}
+					for(int l = Math.max(i-1, 0); l <= i+1 && l < size; l++) {
+						for(int m = Math.max(j-1, 0); m <= j+1 && m < size; m++) {
+							if(board[l][m] != null && board[l][m].getNum() == 10) {
+								fin++;
 							}
 						}
 					}
 					board[i][j] = new Tile(true, fin);
+					if(board[i][j].getNum() == 0 && i < size/2 && j < size/2 ){
+						currentPosX = i;
+						currentPosY = j;
+					}
 				}
 			}
 		}
@@ -98,32 +94,52 @@ public class Board {
 		return currentPosY;
 	}
 	public boolean dig(){
-		board[currentPosX][currentPosY].setShow(false);
-		if(board[currentPosX][currentPosY].getNum() == 10){
-			isGameOver = true;
-			return true;
-		}else if(board[currentPosX][currentPosY].getNum() == 0){
-			digAround(currentPosX, currentPosY);
+		if(!board[currentPosX][currentPosY].getFlag()){
+			flags++;
+			board[currentPosX][currentPosY].setShow(false);
+			if(board[currentPosX][currentPosY].getNum() == 10){
+				isGameOver = true;
+				return true;
+			}else if(board[currentPosX][currentPosY].getNum() == 0){
+				digAround(currentPosX, currentPosY);
+			}
+			return false;
 		}
 		return false;
 	}
 
 	private void digAround(int x, int y){
-		for(int i = -1; i < 2; i++){
-			for(int j = -1; j < 2; j++){
-				try{
-					if(board[x+i][y+j].getNum() == 0 && board[x+i][y+j].getShow() == true){
-						board[x+i][y+j].setShow(false);
-						digAround(x+i, y+j);
-					}else{
-						board[x+i][y+j].setShow(false);
-					}
-					
-				}catch(Exception nullPointerException){}
+		for(int i = Math.max(x-1, 0); i <= x+1 && i < size; i++){
+			for(int j = Math.max(y-1, 0); j <= y+1 && j < size; j++){
+				
+				if(board[i][j].getNum() == 0 && board[i][j].getShow() == true){
+					board[i][j].setShow(false);
+					digAround(i, j);
+				}else{
+					board[i][j].setShow(false);
+				}
+				board[i][j].setFlag(false);
 			}
 		}
 	}
+
 	public boolean isGameOver(){
 		return isGameOver;
+	}
+
+	public void flag(){
+		if(board[currentPosX][currentPosY].getShow()){
+			if(board[currentPosX][currentPosY].getFlag()){
+				flags++;
+				board[currentPosX][currentPosY].setFlag(false);
+			}else{
+				flags--;
+				board[currentPosX][currentPosY].setFlag(true);
+			}
+		}
+
+	}
+	public int getFlags(){
+		return flags;
 	}
 }

@@ -13,7 +13,7 @@ public class Control implements Frame.ActionListener, Frame.EventListener{
 	} 
 	@Override
 	public void onPaintEvent(Graphics g) {
-		buffer.drawToScreen(g, board.getBoard(), board.getPosX(), board.getPosY(), 30);
+		buffer.drawToScreen(g, board.getBoard(), board.getPosX(), board.getPosY(), board.getFlags(), 30);
 	}
 	@Override
 	public void onKeyEvent(Direction d) {
@@ -26,6 +26,8 @@ public class Control implements Frame.ActionListener, Frame.EventListener{
 	public void onEnterEvent() {
 		if(board.isGameOver()){
 			board.initializeBoard();
+		}else{
+			board.flag();
 		}
 		frame.updateFrame();
 	}
