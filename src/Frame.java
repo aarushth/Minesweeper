@@ -3,8 +3,9 @@ import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class Frame extends JFrame{
+public class Frame extends JFrame implements Panel.EventListener{
 	public interface ActionListener{
 		public void onKeyEvent(Direction d);
 		public void onEnterEvent();
@@ -16,7 +17,7 @@ public class Frame extends JFrame{
 	
 	private EventListener evtListener;
 	private ActionListener listener;
-	private Canvas c;
+	private Panel p;
 	
 	public Frame(EventListener e, ActionListener a) {
 		evtListener = e;
@@ -28,13 +29,9 @@ public class Frame extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setFocusable(true);
 		setExtendedState(JFrame.MAXIMIZED_BOTH); 
-		c = new Canvas() {
-			public void paint (Graphics g){
-				evtListener.onPaintEvent(g);
-			}
-		};
-
-		add(c);
+		p = new Panel(this);
+		add(p);
+		
 
 		
 		addKeyListener(new KeyListener());
@@ -63,8 +60,12 @@ private class KeyListener extends KeyAdapter{
 		}
 	}
 
-public void updateFrame() {
-	// TODO Auto-generated method stub
-	c.repaint();
-}
+	public void updateFrame() {
+		p.repaint();
+	}
+
+	@Override
+	public void onPaintEvent(Graphics g) {
+		evtListener.onPaintEvent(g);
+	}
 }

@@ -1,3 +1,4 @@
+import java.nio.file.FileAlreadyExistsException;
 import java.util.Random;
 
 
@@ -6,15 +7,17 @@ public class Board {
 	private int currentPosX;
 	private int currentPosY;
 	private int size;
+	private boolean isGameOver;
 	
 	public Board(int size) {
 		board = new Tile[size][size];
-		currentPosX = 0;
-		currentPosY = 0;
 		this.size = size;
 		initializeBoard();
 	}
 	public void initializeBoard() {
+		currentPosX = 0;
+		currentPosY = 0;
+		isGameOver = false;
 		for(int i = 0; i < size; i++) {
 			for(int j = 0; j < size; j++) {
 				board[i][j] = null;
@@ -93,5 +96,34 @@ public class Board {
 	}
 	public int getPosY(){
 		return currentPosY;
+	}
+	public boolean dig(){
+		board[currentPosX][currentPosY].setShow(false);
+		if(board[currentPosX][currentPosY].getNum() == 10){
+			isGameOver = true;
+			return true;
+		}else if(board[currentPosX][currentPosY].getNum() == 0){
+			digAround(currentPosX, currentPosY);
+		}
+		return false;
+	}
+
+	private void digAround(int x, int y){
+		for(int i = -1; i < 2; i++){
+			for(int j = -1; j < 2; j++){
+				try{
+					if(board[x+i][y+j].getNum() == 0 && board[x+i][y+j].getShow() == true){
+						board[x+i][y+j].setShow(false);
+						digAround(x+i, y+j);
+					}else{
+						board[x+i][y+j].setShow(false);
+					}
+					
+				}catch(Exception nullPointerException){}
+			}
+		}
+	}
+	public boolean isGameOver(){
+		return isGameOver;
 	}
 }

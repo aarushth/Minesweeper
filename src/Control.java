@@ -17,18 +17,26 @@ public class Control implements Frame.ActionListener, Frame.EventListener{
 	}
 	@Override
 	public void onKeyEvent(Direction d) {
-		board.updatePos(d);
-		frame.updateFrame();
+		if(!board.isGameOver()){
+			board.updatePos(d);
+			frame.updateFrame();
+		}
 	}
 	@Override
 	public void onEnterEvent() {
-		// TODO Auto-generated method stub
+		if(board.isGameOver()){
+			board.initializeBoard();
+		}
 		frame.updateFrame();
 	}
 	@Override
 	public void onSpaceEvent() {
-		// TODO Auto-generated method stub
-		
+		if(!board.isGameOver()){
+			if(board.dig()){
+				buffer.gameOver();
+			}
+			frame.updateFrame();
+		}
 	}
 	
 }
