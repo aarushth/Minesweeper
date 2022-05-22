@@ -95,7 +95,6 @@ public class Board {
 	}
 	public boolean dig(){
 		if(!board[currentPosX][currentPosY].getFlag()){
-			flags++;
 			board[currentPosX][currentPosY].setShow(false);
 			if(board[currentPosX][currentPosY].getNum() == 10){
 				isGameOver = true;
@@ -118,7 +117,10 @@ public class Board {
 				}else{
 					board[i][j].setShow(false);
 				}
-				board[i][j].setFlag(false);
+				if(board[i][j].getFlag()){
+					board[i][j].setFlag(false);
+					flags++;
+				}
 			}
 		}
 	}
@@ -127,19 +129,35 @@ public class Board {
 		return isGameOver;
 	}
 
-	public void flag(){
-		if(board[currentPosX][currentPosY].getShow()){
-			if(board[currentPosX][currentPosY].getFlag()){
-				flags++;
-				board[currentPosX][currentPosY].setFlag(false);
-			}else{
-				flags--;
-				board[currentPosX][currentPosY].setFlag(true);
+	public boolean flag(){
+		if(flags != 0 || board[currentPosX][currentPosY].getFlag()){
+			if(board[currentPosX][currentPosY].getShow()){
+				if(board[currentPosX][currentPosY].getFlag()){
+					flags++;
+					board[currentPosX][currentPosY].setFlag(false);
+				}else{
+					flags--;
+					board[currentPosX][currentPosY].setFlag(true);
+					if(flags == 0 && checkWin()){
+						isGameOver = true;
+						return true;
+					}
+				}
 			}
 		}
-
+		return false;
 	}
 	public int getFlags(){
 		return flags;
+	}
+	private boolean checkWin(){
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[0].length; j++){
+				if((board[i][j].getNum() != 10 && board[i][j].getFlag())||(board[i][j].getNum() == 10 && !board[i][j].getFlag())){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

@@ -9,3 +9,12 @@ bin/Frame.class
 bin/Panel$EventListener.class
 bin/Panel.class
 *.class
+*.class
+*.class
+bin/Control.class
+*.class
+*.class
+*.class
+bin/Board.class
+bin/Board.class
+bin/Buffer.class

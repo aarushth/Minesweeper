@@ -26,8 +26,11 @@ public class Control implements Frame.ActionListener, Frame.EventListener{
 	public void onEnterEvent() {
 		if(board.isGameOver()){
 			board.initializeBoard();
+			buffer.reset();
 		}else{
-			board.flag();
+			if(board.flag()){
+				buffer.gameOver(true);
+			}
 		}
 		frame.updateFrame();
 	}
@@ -35,7 +38,7 @@ public class Control implements Frame.ActionListener, Frame.EventListener{
 	public void onSpaceEvent() {
 		if(!board.isGameOver()){
 			if(board.dig()){
-				buffer.gameOver();
+				buffer.gameOver(false);
 			}
 			frame.updateFrame();
 		}
