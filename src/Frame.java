@@ -1,9 +1,7 @@
-import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public class Frame extends JFrame implements Panel.EventListener{
 	public interface ActionListener{
